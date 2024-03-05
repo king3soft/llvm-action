@@ -57,7 +57,7 @@ jobs:
       - name: LLVM Build
         run: |
           #find /usr/lib name libffi.so*
-          ln -s /usr/lib/x86_64-linux-gnu/libffi.so.7 /usr/lib/x86_64-linux-gnu/libffi.so.6
+          sudo ln -s /usr/lib/x86_64-linux-gnu/libffi.so.7 /usr/lib/x86_64-linux-gnu/libffi.so.6
           #find /usr/lib -name libffi.so*
           #ls
           #python toolchain/llvm_android/build.py -h
