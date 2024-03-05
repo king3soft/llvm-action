@@ -20,7 +20,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Build Verison
         id: build_version
@@ -35,7 +35,7 @@ jobs:
 
           curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/local/bin/repo
           chmod a+x /usr/local/bin/repo
-
+                
           # mkdir llvm-toolchain && cd llvm-toolchain
           # repo init -u https://android.googlesource.com/platform/manifest -b llvm-toolchain
           # repo sync -c
@@ -46,7 +46,8 @@ jobs:
           ls .repo/mainifests
           repo init -m manifest_8490178.xml
           repo sync -c
-
+      - name: LLVM Build
+        run: |
           find usr/lib name libffi.so*
           ln -s /usr/lib/x86 64-linux-gnu/libffi.so.7 /usr/lib/x8664-linux-gnu/libffi.so.6
           find /usr/lib -name libffi.so*
