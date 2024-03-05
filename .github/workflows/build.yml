@@ -44,7 +44,7 @@ jobs:
           curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/local/bin/repo
           chmod a+x /usr/local/bin/repo
 
-          mkdir llvm-toolchain && cd llvm-toolchain
+          # mkdir llvm-toolchain && cd llvm-toolchain
           repo init -u https://android.googlesource.com/platform/manifest -b llvm-toolchain
           repo sync -c
           
@@ -56,10 +56,10 @@ jobs:
           # repo sync -c
       - name: LLVM Build
         run: |
-          find /usr/lib name libffi.so*
+          #find /usr/lib name libffi.so*
           ln -s /usr/lib/x86 64-linux-gnu/libffi.so.7 /usr/lib/x8664-linux-gnu/libffi.so.6
-          find /usr/lib -name libffi.so*
-          ls
-          python toolchain/llvm_android/build.py -h
-          python toolchain/llvm_android/build.py --help
+          #find /usr/lib -name libffi.so*
+          #ls
+          #python toolchain/llvm_android/build.py -h
+          #python toolchain/llvm_android/build.py --help
           python toolchain/llvm_android/build.py --no-build linux      
