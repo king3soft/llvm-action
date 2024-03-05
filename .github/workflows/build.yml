@@ -19,8 +19,15 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 512
+          swap-size-mb: 4096
+          remove-dotnet: 'true'
+      - name: Checkout
+        # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+        uses: actions/checkout@v4
 
       - name: Build Verison
         id: build_version
@@ -28,10 +35,11 @@ jobs:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
         run: |
           echo "$GITHUB_CONTEXT"
+        
       - name: Install dependencies
         run: |          
           sudo apt-get install cmake bison          
-          sudo dd if=/dev/zero of=/swp bs=1M count=8192  && sudo chmod 600 /swp && sudo mkswap /swp  && sudo swapon /swp
+          # sudo dd if=/dev/zero of=/swp bs=1M count=8192  && sudo chmod 600 /swp && sudo mkswap /swp  && sudo swapon /swp
 
           curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/local/bin/repo
           chmod a+x /usr/local/bin/repo
