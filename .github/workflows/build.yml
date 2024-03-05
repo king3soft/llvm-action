@@ -31,21 +31,21 @@ jobs:
       - name: Install dependencies
         run: |          
           sudo apt-get install cmake bison          
-          sudo dd if=/dev/zero of=/swp bs=1M count=8192  && sudo chmod 600 swap && sudo mkswap /swp  && sudo swapon /swp
+          sudo dd if=/dev/zero of=/swp bs=1M count=8192  && sudo chmod 600 /swp && sudo mkswap /swp  && sudo swapon /swp
 
           curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/local/bin/repo
           chmod a+x /usr/local/bin/repo
-                
-          # mkdir llvm-toolchain && cd llvm-toolchain
-          # repo init -u https://android.googlesource.com/platform/manifest -b llvm-toolchain
-          # repo sync -c
-          
+
           mkdir llvm-toolchain && cd llvm-toolchain
-          repo init
-          cp $GITHUB_WORKSPACE/manifest_8490178.xml .repo/mainifests
-          ls .repo/mainifests
-          repo init -m manifest_8490178.xml
+          repo init -u https://android.googlesource.com/platform/manifest -b llvm-toolchain
           repo sync -c
+          
+          # mkdir llvm-toolchain && cd llvm-toolchain
+          # repo init
+          # cp $GITHUB_WORKSPACE/manifest_8490178.xml .repo/mainifests
+          ls .repo/mainifests
+          # repo init -m manifest_8490178.xml
+          # repo sync -c
       - name: LLVM Build
         run: |
           find usr/lib name libffi.so*
