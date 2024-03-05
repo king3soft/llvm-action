@@ -56,7 +56,7 @@ jobs:
           # repo sync -c
       - name: LLVM Build
         run: |
-          find usr/lib name libffi.so*
+          find /usr/lib name libffi.so*
           ln -s /usr/lib/x86 64-linux-gnu/libffi.so.7 /usr/lib/x8664-linux-gnu/libffi.so.6
           find /usr/lib -name libffi.so*
           ls
