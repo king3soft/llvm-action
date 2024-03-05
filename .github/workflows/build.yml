@@ -33,8 +33,8 @@ jobs:
           sudo apt-get install cmake bison
           sudo dd if=/dev/zero of=/swp bs=1M count=20480  && sudo mkswap /swp  && sudo swapon /swp
 
-          curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/bin/repo
-          chmod a+x /usr/bin/repo
+          curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/local/bin/repo
+          chmod a+x /usr/local/bin/repo
 
           # mkdir llvm-toolchain && cd llvm-toolchain
           # repo init -u https://android.googlesource.com/platform/manifest -b llvm-toolchain
