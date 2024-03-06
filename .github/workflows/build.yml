@@ -45,8 +45,8 @@ jobs:
           chmod a+x /usr/local/bin/repo
 
           # mkdir llvm-toolchain && cd llvm-toolchain
-          repo init -u https://android.googlesource.com/platform/manifest -b llvm-toolchain
-          repo sync -c
+          # repo init -u https://android.googlesource.com/platform/manifest -b llvm-toolchain
+          # repo sync -c
           
           # mkdir llvm-toolchain && cd llvm-toolchain
           # repo init
