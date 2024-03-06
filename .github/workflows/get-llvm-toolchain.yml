@@ -1,0 +1,56 @@
+# This is a basic workflow to help you get started with Actions
+
+name: get llvm toolchain repo
+
+# Controls when the workflow will run
+on:
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 512
+          swap-size-mb: 4096
+          remove-dotnet: 'true'
+      - name: Checkout
+        # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+        uses: actions/checkout@v4
+
+      - name: Build Verison
+        id: build_version
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+        
+      - name: Install dependencies
+        run: |          
+          sudo apt-get install cmake bison          
+          curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/local/bin/repo
+          chmod a+x /usr/local/bin/repo
+
+          mkdir llvm-toolchain && cd llvm-toolchain
+          repo init -u https://android.googlesource.com/platform/manifest -b llvm-toolchain
+          cp $GITHUB_WORKSPACE/manifest_8490178.xml .repo/mainifests
+          ls .repo/mainifests
+          repo init -m manifest_8490178.xml
+
+          repo sync -c
+          
+      - name: LLVM Build Help
+        run: |
+          ls llvm-toolchain
+      - name: Uploading
+        uses: actions/upload-artifact@v2
+        with:
+          name: llvm-toolchain-manifest_8490178
+          path: ./llvm-toolchain
