@@ -54,9 +54,10 @@ jobs:
         run: |
           sudo rm -rf llvm-toolchain/.repo
           ls -a llvm-toolchain
+          zip -q -r llvm-toolchain-manifest_8490178.zip llvm-toolchain
           df -h
       - name: Uploading
         uses: actions/upload-artifact@v2
         with:
           name: llvm-toolchain-manifest_8490178
-          path: ./llvm-toolchain
+          path: ./llvm-toolchain-manifest_8490178.zip
