@@ -33,8 +33,7 @@ jobs:
           echo "$GITHUB_CONTEXT"
         
       - name: Install dependencies
-        run: |          
-          sudo apt-get install cmake bison          
+        run: |                
           curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/local/bin/repo
           chmod a+x /usr/local/bin/repo
 
@@ -42,14 +41,15 @@ jobs:
           repo init -u https://android.googlesource.com/platform/manifest -b llvm-toolchain
 
           echo "ls .repo/mainifests:"
-          ls $GITHUB_WORKSPACE/.repo/mainifests
+          ls -al
+          ls $GITHUB_WORKSPACE/llvm-toolchain/.repo/mainifests
 
           echo "ls $GITHUB_WORKSPACE:"
           ls $GITHUB_WORKSPACE
-          cp $GITHUB_WORKSPACE/manifest_8490178.xml .repo/mainifests/
+          sudo cp $GITHUB_WORKSPACE/manifest_8490178.xml $GITHUB_WORKSPACE/llvm-toolchain/.repo/mainifests/
 
           echo "ls .repo/mainifests:"
-          ls $GITHUB_WORKSPACE/.repo/mainifests
+          ls $GITHUB_WORKSPACE/llvm-toolchain/.repo/mainifests
 
           echo "init by manifest_8490178:"
           repo init -m manifest_8490178.xml
