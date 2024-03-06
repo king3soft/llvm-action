@@ -52,8 +52,8 @@ jobs:
           
       - name: LLVM Build Help
         run: |
-          sudo rm -rf .repo
-          ls llvm-toolchain
+          sudo rm -rf llvm-toolchain/.repo
+          ls -a llvm-toolchain
           df -h
       - name: Uploading
         uses: actions/upload-artifact@v2
