@@ -42,7 +42,7 @@ jobs:
 
           echo "ls .repo/mainifests:"
           ls -al
-          ls $GITHUB_WORKSPACE/llvm-toolchain/.repo/mainifests
+          ls $GITHUB_WORKSPACE/llvm-toolchain/.repo
 
           echo "ls $GITHUB_WORKSPACE:"
           ls $GITHUB_WORKSPACE
