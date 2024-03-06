@@ -4,6 +4,8 @@ name: get llvm toolchain repo
 
 # Controls when the workflow will run
 on:
+  push:    
+    branches: [ main ]
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -40,16 +42,16 @@ jobs:
           mkdir llvm-toolchain && cd llvm-toolchain
           repo init -u https://android.googlesource.com/platform/manifest -b llvm-toolchain
 
-          echo "ls .repo/mainifests:"
+          echo "ls .repo/manifests:"
           ls -al
           ls $GITHUB_WORKSPACE/llvm-toolchain/.repo
 
           echo "ls $GITHUB_WORKSPACE:"
           ls $GITHUB_WORKSPACE
-          sudo cp $GITHUB_WORKSPACE/manifest_8490178.xml $GITHUB_WORKSPACE/llvm-toolchain/.repo/mainifests/
+          sudo cp $GITHUB_WORKSPACE/manifest_8490178.xml $GITHUB_WORKSPACE/llvm-toolchain/.repo/manifests/
 
-          echo "ls .repo/mainifests:"
-          ls $GITHUB_WORKSPACE/llvm-toolchain/.repo/mainifests
+          echo "ls .repo/manifests:"
+          ls $GITHUB_WORKSPACE/llvm-toolchain/.repo/manifests
 
           echo "init by manifest_8490178:"
           repo init -m manifest_8490178.xml
