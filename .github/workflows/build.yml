@@ -58,11 +58,11 @@ jobs:
           # repo sync -c
       - name: LLVM Build Help
         run: |
-          ls
+          ls llvm-toolchain
       - name: LLVM Build
         run: |
           sudo ln -s /usr/lib/x86_64-linux-gnu/libffi.so.7 /usr/lib/x86_64-linux-gnu/libffi.so.6
-          python toolchain/llvm_android/build.py --no-build linux              
+          python llvm-toolchain/toolchain/llvm_android/build.py --no-build linux              
       - name: LLVM Pack
         run: |
           ls
