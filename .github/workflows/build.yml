@@ -56,10 +56,18 @@ jobs:
           # repo sync -c
       - name: LLVM Build
         run: |
-          #find /usr/lib name libffi.so*
           sudo ln -s /usr/lib/x86_64-linux-gnu/libffi.so.7 /usr/lib/x86_64-linux-gnu/libffi.so.6
-          #find /usr/lib -name libffi.so*
-          #ls
           #python toolchain/llvm_android/build.py -h
           #python toolchain/llvm_android/build.py --help
-          python toolchain/llvm_android/build.py --no-build linux      
+          #python toolchain/llvm_android/build.py --no-build linux
+
+          mkdir -p out/install/windows-x86/clang-dev
+          touch out/install/windows-x86/clang-dev/keep
+          tar -zcvf release.tar.gz out/install/windows-x86/clang-dev
+      - name: Upload Github Assets
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: release.tar.gz
+          prerelease: ${{ contains(github.ref, '-') }}
