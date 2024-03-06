@@ -21,8 +21,12 @@ jobs:
         uses: easimon/maximize-build-space@master
         with:
           root-reserve-mb: 512
-          swap-size-mb: 4096
+          swap-size-mb: 1024
           remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-docker-images: 'true'
+          remove-codeql: 'true'
+          remove-haskell: 'true'
       - name: Checkout
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
         uses: actions/checkout@v4
@@ -41,27 +45,16 @@ jobs:
 
           mkdir llvm-toolchain && cd llvm-toolchain
           repo init -u https://android.googlesource.com/platform/manifest -b llvm-toolchain
-
-          echo "ls .repo/manifests:"
-          ls -al
-          ls $GITHUB_WORKSPACE/llvm-toolchain/.repo
-
-          echo "ls $GITHUB_WORKSPACE:"
-          ls $GITHUB_WORKSPACE
           sudo cp $GITHUB_WORKSPACE/manifest_8490178.xml $GITHUB_WORKSPACE/llvm-toolchain/.repo/manifests/
-
-          echo "ls .repo/manifests:"
-          ls $GITHUB_WORKSPACE/llvm-toolchain/.repo/manifests
-
-          echo "init by manifest_8490178:"
           repo init -m manifest_8490178.xml
 
-          echo "sync:"
           repo sync -c
           
       - name: LLVM Build Help
         run: |
+          sudo rm -rf .repo
           ls llvm-toolchain
+          df -h
       - name: Uploading
         uses: actions/upload-artifact@v2
         with:
