@@ -40,10 +40,18 @@ jobs:
 
           mkdir llvm-toolchain && cd llvm-toolchain
           repo init -u https://android.googlesource.com/platform/manifest -b llvm-toolchain
+
+          echo "ls $GITHUB_WORKSPACE:"
+          ls $GITHUB_WORKSPACE
           cp $GITHUB_WORKSPACE/manifest_8490178.xml .repo/mainifests
+
+          echo "ls .repo/mainifests:"
           ls .repo/mainifests
+
+          echo "init by manifest_8490178:"
           repo init -m manifest_8490178.xml
 
+          echo "sync:"
           repo sync -c
           
       - name: LLVM Build Help
