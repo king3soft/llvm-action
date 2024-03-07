@@ -56,13 +56,16 @@ jobs:
       - name: Packing
         run: |
           sudo rm -rf llvm-toolchain/.repo
-          tar -zcvf libzstd-linux-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/lib/libzstd-linux-install
-          tar -zcvf stage1-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/stage1-install
-          tar -zcvf windows-libcxx-x86-64-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/windows-libcxx-x86-64-install
-          tar -zcvf libzstd-windows-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/lib/libzstd-windows-install
-          tar -zcvf libxml2-windows-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/lib/libxml2-windows-install
-          tar -zcvf liblzma-windows-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/lib/liblzma-windows-install
-          tar -zcvf windows-x86-64-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/windows-x86-64-install
+          ls -al llvm-toolchain
+          echo "------------"
+          ls -al llvm-toolchain/out
+          tar -zcvf libzstd-linux-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/llvm-toolchain/out/lib/libzstd-linux-install
+          tar -zcvf stage1-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/llvm-toolchain/out/stage1-install
+          tar -zcvf windows-libcxx-x86-64-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/llvm-toolchain/out/windows-libcxx-x86-64-install
+          tar -zcvf libzstd-windows-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/llvm-toolchain/out/lib/libzstd-windows-install
+          tar -zcvf libxml2-windows-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/llvm-toolchain/out/lib/libxml2-windows-install
+          tar -zcvf liblzma-windows-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/llvm-toolchain/out/lib/liblzma-windows-install
+          tar -zcvf windows-x86-64-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/llvm-toolchain/out/windows-x86-64-install
 
       - name: Uploading libzstd-linux-install-release.tar.gz
         uses: actions/upload-artifact@v2
