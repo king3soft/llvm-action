@@ -54,7 +54,7 @@ jobs:
           sudo ln -s /usr/lib/x86_64-linux-gnu/libffi.so.7 /usr/lib/x86_64-linux-gnu/libffi.so.6
           #python toolchain/llvm_android/build.py -h
           #python toolchain/llvm_android/build.py --help
-          python toolchain/llvm_android/build.py --no-build linux
+          python llvm-toolchain/toolchain/llvm_android/build.py --no-build linux
       - name: Packing
         run: |
           tar -zcvf libzstd-linux-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/lib/libzstd-linux-install
