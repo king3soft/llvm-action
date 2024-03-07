@@ -1,0 +1,102 @@
+# This is a basic workflow to help you get started with Actions
+
+name: lixiaofeng build
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:    
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 512
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+      - name: Checkout
+        # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+        uses: actions/checkout@v4
+
+      - name: Build Verison
+        id: build_version
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+        
+      - name: Install dependencies
+        run: |          
+          curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/local/bin/repo
+          chmod a+x /usr/local/bin/repo
+
+          mkdir llvm-toolchain && cd llvm-toolchain
+          repo init -u https://android.googlesource.com/platform/manifest -b llvm-toolchain
+          sudo cp $GITHUB_WORKSPACE/manifest_8490178.xml $GITHUB_WORKSPACE/llvm-toolchain/.repo/manifests/
+          repo init -m manifest_8490178.xml
+
+          repo sync -c
+      - name: LLVM Build
+        run: |
+          sudo rm -rf llvm-toolchain/.repo
+
+          sudo ln -s /usr/lib/x86_64-linux-gnu/libffi.so.7 /usr/lib/x86_64-linux-gnu/libffi.so.6
+          #python toolchain/llvm_android/build.py -h
+          #python toolchain/llvm_android/build.py --help
+          python toolchain/llvm_android/build.py --no-build linux
+      - name: Packing
+        run: |
+          tar -zcvf libzstd-linux-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/lib/libzstd-linux-install
+          tar -zcvf stage1-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/stage1-install
+          tar -zcvf windows-libcxx-x86-64-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/windows-libcxx-x86-64-install
+          tar -zcvf libzstd-windows-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/lib/libzstd-windows-install
+          tar -zcvf libxml2-windows-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/lib/libxml2-windows-install
+          tar -zcvf liblzma-windows-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/lib/liblzma-windows-install
+          tar -zcvf windows-x86-64-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/windows-x86-64-install
+
+      - name: Uploading libzstd-linux-install-release.tar.gz
+        uses: actions/upload-artifact@v2
+        with:
+          name: libzstd-linux-install-release
+          path: ./libzstd-linux-install-release.tar.gz
+      - name: Uploading stage1-install-release.tar.gz
+        uses: actions/upload-artifact@v2
+        with:
+          name: stage1-install-release
+          path: ./stage1-install-release.tar.gz
+      - name: Uploading windows-libcxx-x86-64-install-release.tar.gz
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-libcxx-x86-64-install-release
+          path: ./windows-libcxx-x86-64-install-release.tar.gz
+      - name: Uploading libzstd-windows-install-release.tar.gz
+        uses: actions/upload-artifact@v2
+        with:
+          name: libzstd-windows-install-release
+          path: ./libzstd-windows-install-release.tar.gz
+      - name: Uploading libxml2-windows-install-release.tar.gz
+        uses: actions/upload-artifact@v2
+        with:
+          name: libxml2-windows-install-release
+          path: ./libxml2-windows-install-release.tar.gz
+      - name: Uploading liblzma-windows-install-release.tar.gz
+        uses: actions/upload-artifact@v2
+        with:
+          name: liblzma-windows-install-release
+          path: ./liblzma-windows-install-release.tar.gz
+      - name: Uploading windows-x86-64-install-release.tar.gz
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-x86-64-install-release
+          path: ./windows-x86-64-install-release.tar.gz

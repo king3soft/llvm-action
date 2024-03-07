@@ -4,8 +4,8 @@ name: get llvm toolchain repo
 
 # Controls when the workflow will run
 on:
-  push:    
-    branches: [ main ]
+  # push:    
+  #   branches: [ main ]
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
