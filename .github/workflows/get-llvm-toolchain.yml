@@ -54,11 +54,37 @@ jobs:
         run: |
           sudo rm -rf llvm-toolchain/.repo
           ls -a llvm-toolchain
-          zip -q -r llvm-toolchain-manifest_8490178.zip llvm-toolchain
-          sudo rm -rf llvm-toolchain
+
+          zip -q -r llvm-toolchain-bionic-manifest_8490178.zip llvm-toolchain/bionic
+          sudo rm -rf llvm-toolchain/bionic
+          
+          zip -q -r llvm-toolchain-external-manifest_8490178.zip llvm-toolchain/external
+          sudo rm -rf llvm-toolchain/external
+
+          zip -q -r llvm-toolchain-prebuilts-manifest_8490178.zip llvm-toolchain/prebuilts
+          sudo rm -rf llvm-toolchain/prebuilts
+
+          zip -q -r llvm-toolchain-toolchain-manifest_8490178.zip llvm-toolchain/toolchain
+          sudo rm -rf llvm-toolchain/toolchain
+
           df -h
-      - name: Uploading
+      - name: Uploading bionic
         uses: actions/upload-artifact@v2
         with:
-          name: llvm-toolchain-manifest_8490178
-          path: ./llvm-toolchain-manifest_8490178.zip
+          name: llvm-toolchain-bionic-manifest_8490178
+          path: ./llvm-toolchain-bionic-manifest_8490178.zip
+      - name: Uploading external
+        uses: actions/upload-artifact@v2
+        with:
+          name: llvm-toolchain-external-manifest_8490178
+          path: ./llvm-toolchain-external-manifest_8490178.zip
+      - name: Uploading prebuilts
+        uses: actions/upload-artifact@v2
+        with:
+          name: llvm-toolchain-prebuilts-manifest_8490178
+          path: ./llvm-toolchain-prebuilts-manifest_8490178.zip
+      - name: Uploading toolchain
+        uses: actions/upload-artifact@v2
+        with:
+          name: llvm-toolchain-toolchain-manifest_8490178
+          path: ./llvm-toolchain-toolchain-manifest_8490178.zip
