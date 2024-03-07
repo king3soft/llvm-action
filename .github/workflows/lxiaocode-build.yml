@@ -49,14 +49,13 @@ jobs:
           repo sync -c
       - name: LLVM Build
         run: |
-          sudo rm -rf llvm-toolchain/.repo
-
           sudo ln -s /usr/lib/x86_64-linux-gnu/libffi.so.7 /usr/lib/x86_64-linux-gnu/libffi.so.6
           #python toolchain/llvm_android/build.py -h
           #python toolchain/llvm_android/build.py --help
           python llvm-toolchain/toolchain/llvm_android/build.py --no-build linux
       - name: Packing
         run: |
+          sudo rm -rf llvm-toolchain/.repo
           tar -zcvf libzstd-linux-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/lib/libzstd-linux-install
           tar -zcvf stage1-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/stage1-install
           tar -zcvf windows-libcxx-x86-64-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/out/windows-libcxx-x86-64-install
