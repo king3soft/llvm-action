@@ -59,46 +59,9 @@ jobs:
           ls -al llvm-toolchain
           echo "------------"
           ls -al llvm-toolchain/out
-          tar -zcvf libzstd-linux-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/llvm-toolchain/out/lib/libzstd-linux-install
-          tar -zcvf stage1-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/llvm-toolchain/out/stage1-install
-          tar -zcvf windows-libcxx-x86-64-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/llvm-toolchain/out/windows-libcxx-x86-64-install
-          tar -zcvf libzstd-windows-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/llvm-toolchain/out/lib/libzstd-windows-install
-          tar -zcvf libxml2-windows-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/llvm-toolchain/out/lib/libxml2-windows-install
-          tar -zcvf liblzma-windows-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/llvm-toolchain/out/lib/liblzma-windows-install
-          tar -zcvf windows-x86-64-install-release.tar.gz /home/runner/work/llvm-action/llvm-action/llvm-toolchain/out/windows-x86-64-install
-
-      - name: Uploading libzstd-linux-install-release.tar.gz
+          tar -zcvf out-install-release.tar.gz ./llvm-toolchain/out
+      - name: Uploading out
         uses: actions/upload-artifact@v2
         with:
-          name: libzstd-linux-install-release
-          path: ./libzstd-linux-install-release.tar.gz
-      - name: Uploading stage1-install-release.tar.gz
-        uses: actions/upload-artifact@v2
-        with:
-          name: stage1-install-release
-          path: ./stage1-install-release.tar.gz
-      - name: Uploading windows-libcxx-x86-64-install-release.tar.gz
-        uses: actions/upload-artifact@v2
-        with:
-          name: windows-libcxx-x86-64-install-release
-          path: ./windows-libcxx-x86-64-install-release.tar.gz
-      - name: Uploading libzstd-windows-install-release.tar.gz
-        uses: actions/upload-artifact@v2
-        with:
-          name: libzstd-windows-install-release
-          path: ./libzstd-windows-install-release.tar.gz
-      - name: Uploading libxml2-windows-install-release.tar.gz
-        uses: actions/upload-artifact@v2
-        with:
-          name: libxml2-windows-install-release
-          path: ./libxml2-windows-install-release.tar.gz
-      - name: Uploading liblzma-windows-install-release.tar.gz
-        uses: actions/upload-artifact@v2
-        with:
-          name: liblzma-windows-install-release
-          path: ./liblzma-windows-install-release.tar.gz
-      - name: Uploading windows-x86-64-install-release.tar.gz
-        uses: actions/upload-artifact@v2
-        with:
-          name: windows-x86-64-install-release
-          path: ./windows-x86-64-install-release.tar.gz
+          name: out-install-release
+          path: ./out-install-release.tar.gz
