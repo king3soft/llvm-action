@@ -1,5 +1,5 @@
 
-add_library(FunctionCount SHARED
+add_library(FunctionCount MODULE
     # List your source files here.
     FunctionCount.cpp
 )

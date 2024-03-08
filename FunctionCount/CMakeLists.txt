@@ -1,5 +1,5 @@
 
-add_library(Timer SHARED
+add_library(Timer MODULE
     # List your source files here.
     Timer.cpp
 )
