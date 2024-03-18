@@ -43,34 +43,23 @@ jobs:
 
           mkdir llvm-toolchain && cd llvm-toolchain
           repo init -u https://android.googlesource.com/platform/manifest -b llvm-toolchain
-          sudo cp $GITHUB_WORKSPACE/manifest_8490178.xml $GITHUB_WORKSPACE/llvm-toolchain/.repo/manifests/
-          repo init -m manifest_8490178.xml
+          sudo cp $GITHUB_WORKSPACE/manifest_7714059.xml $GITHUB_WORKSPACE/llvm-toolchain/.repo/manifests/
+          repo init -m manifest_7714059.xml
 
           repo sync -c
-
-          echo "------------"
-          echo "Copy Code"
-          echo "------------"
-          sudo cp -r $GITHUB_WORKSPACE/FunctionCount $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms
-          sudo cp -r $GITHUB_WORKSPACE/Timer $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms
-          sudo rm $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms/CMakeLists.txt
-          sudo cp $GITHUB_WORKSPACE/CMakeLists.txt $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms/CMakeLists.txt
-
-          ls -al $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms
-          cat $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms/CMakeLists.txt
       - name: LLVM Build
         run: |
           sudo ln -s /usr/lib/x86_64-linux-gnu/libffi.so.7 /usr/lib/x86_64-linux-gnu/libffi.so.6
           #python toolchain/llvm_android/build.py -h
           #python toolchain/llvm_android/build.py --help
-          python llvm-toolchain/toolchain/llvm_android/build.py --skip-source-setup --no-build linux
+          python llvm-toolchain/toolchain/llvm_android/build.py --no-build linux
       - name: Packing
         run: |
           sudo rm -rf llvm-toolchain/.repo
           ls -al llvm-toolchain
           echo "------------"
           ls -al llvm-toolchain/out
-          tar -zcvf out-install-release.tar.gz ./llvm-toolchain/out/windows-x86-64-install
+          tar -zcvf out-install-release.tar.gz ./llvm-toolchain/out
       - name: Uploading out
         uses: actions/upload-artifact@v2
         with:
