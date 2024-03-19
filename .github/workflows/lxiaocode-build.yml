@@ -48,8 +48,8 @@ jobs:
 
           repo sync -c
 
-          sudo chmod 755 patch.sh
-          sudo sh patch.sh
+          sudo chmod 755 $GITHUB_WORKSPACE/patch.sh
+          sudo sh $GITHUB_WORKSPACE/patch.sh
 
           ls -al $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms
           cat $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms/CMakeLists.txt
