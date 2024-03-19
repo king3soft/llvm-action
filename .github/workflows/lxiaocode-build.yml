@@ -52,7 +52,7 @@ jobs:
           echo "Copy Code"
           echo "------------"
           sudo cp -r $GITHUB_WORKSPACE/FunctionCount $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms
-          ls -al $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms/Timer
+          ls -al $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms/FunctionCount
           sudo cp -r $GITHUB_WORKSPACE/Timer $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms
           ls -al $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms/Timer
           sudo rm $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms/CMakeLists.txt
