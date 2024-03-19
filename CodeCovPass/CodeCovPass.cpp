@@ -1,23 +1,8 @@
 #include "llvm/Transforms/KingsoftPass.h"
 #include "llvm/Pass.h"
-#include "llvm/IR/Function.h"
-#include "llvm/Passes/PassBuilder.h"
-#include "llvm/Passes/PassPlugin.h"
 #include "llvm/Support/raw_ostream.h"
-#include "llvm/IR/LegacyPassManager.h"
-#include "llvm/Transforms/IPO/PassManagerBuilder.h"
 #include "llvm/IR/IRBuilder.h"
-#include "llvm/IR/Module.h"
 #include "llvm/IR/DebugInfoMetadata.h"
-#include "llvm/Support/CommandLine.h"
-
-#include "llvm/ADT/SmallVector.h"
-#include "llvm/ADT/Statistic.h"
-#include "llvm/ADT/Triple.h"
-#include "llvm/IR/CallingConv.h"
-
-#include "llvm/IR/Instruction.h"
-#include "llvm/InitializePasses.h"
 
 #include <fstream>
 
