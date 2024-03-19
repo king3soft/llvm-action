@@ -15,8 +15,15 @@ namespace
         std::ofstream output;
         static char ID;
         CodeCovPass() : FunctionPass(ID) {
-            const char* filepath = "D:\\CodeCovPass.log";
-            output.open(filepath, std::ios::out | std::ios::app);
+            const char* CodeCovPassLog = std::getenv("CodeCovPassLog");
+            if (CodeCovPassLog) {
+                const char* filepath = "D:\\CodeCovPass.log";
+                output.open(filepath, std::ios::out | std::ios::app);
+            }
+            else 
+            {
+                output.open("./CodeCovPass.log", std::ios::out | std::ios::app);
+            }
         }
 
         virtual bool runOnFunction(Function &F) override {
