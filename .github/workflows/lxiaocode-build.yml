@@ -48,15 +48,8 @@ jobs:
 
           repo sync -c
 
-          echo "------------"
-          echo "Copy Code"
-          echo "------------"
-          sudo cp -r $GITHUB_WORKSPACE/FunctionCount $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms
-          ls -al $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms/Timer
-          sudo cp -r $GITHUB_WORKSPACE/Timer $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms
-          ls -al $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms/Timer
-          sudo rm $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms/CMakeLists.txt
-          sudo cp $GITHUB_WORKSPACE/CMakeLists.txt $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms/CMakeLists.txt
+          sudo chmod 755 patch.sh
+          sudo sh patch.sh
 
           ls -al $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms
           cat $GITHUB_WORKSPACE/llvm-toolchain/toolchain/llvm-project/llvm/lib/Transforms/CMakeLists.txt
