@@ -13,10 +13,15 @@ namespace
     struct CodeCovPass : public FunctionPass
     {
         std::ofstream output;
+        const char* codeCovPassEnv;
+        const char* codeCovPassLog;
+
         static char ID;
         CodeCovPass() : FunctionPass(ID) {
-            const char* CodeCovPassLog = std::getenv("CodeCovPassLog");
-            if (CodeCovPassLog) {
+            // 尝试获取环境变量
+            codeCovPassEnv = std::getenv("CodeCovPassEnv");
+            codeCovPassLog = std::getenv("CodeCovPassLog");
+            if (codeCovPassLog) {
                 const char* filepath = "D:\\CodeCovPass.log";
                 output.open(filepath, std::ios::out | std::ios::app);
             }
@@ -24,23 +29,28 @@ namespace
             {
                 output.open("./CodeCovPass.log", std::ios::out | std::ios::app);
             }
+
+            if (codeCovPassEnv) {
+                output << "CodeCovPassEnv: " << codeCovPassEnv << "\n" << std::endl;
+            }
+            else
+            {
+                output << "CodeCovPassEnv environment variable is not set.\n" << std::endl;
+            }
         }
 
         virtual bool runOnFunction(Function &F) override {
-
-            // 尝试获取环境变量
-            const char* CodeCovPassEnv = std::getenv("CodeCovPassEnv");
-            if (!CodeCovPassEnv) {
-                output << "CodeCovPassEnv environment variable is not set.\n" << std::endl;
-                errs() << "CodeCovPassEnv environment variable is not set.\n";
+            if (!codeCovPassEnv) {
                 return false;
             }
-            std::string FileName(CodeCovPassEnv);
+
+            std::string FileName(codeCovPassEnv);
 
             if (auto *SP = F.getSubprogram()) {
                 StringRef CurrentFileName = SP->getFilename();
                 if (CurrentFileName.endswith(FileName)) {
 
+                    output << "Function found: " << F.getName() << '\n' << std::endl;
                     // Context
                     LLVMContext &Context = F.getContext();
                     Module *M = F.getParent();
