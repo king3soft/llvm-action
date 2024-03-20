@@ -1,3 +1,5 @@
+set(PICO_CXX_ENABLE_EXCEPTIONS 1)
+
 add_llvm_component_library(LLVMGTrackCoveragePass
   GTrackCoveragePass.cpp
 
@@ -12,4 +14,4 @@ add_llvm_component_library(LLVMGTrackCoveragePass
   Support
   )
 
-  include_directories(.)
+include_directories(.)
