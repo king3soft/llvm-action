@@ -34,14 +34,14 @@ public:
 private:
     bool enable = false;
     std::vector<std::string> include_files;
-    std::vector<std::string> ingore_functions;
+    std::vector<std::string> ignore_functions;
 };
 }
 
 bool GTrackCoveragePass::initializeGTrackCoveragePass(const char *confFile) {
 
     try {
-        auto tbl = toml::parse_file(confFile);
+        auto tbl = toml::parse(confFile);
         if (tbl.at_path("include.files").is_array()) {
             auto arr = *tbl.at_path("include.files").as_array();
             for (auto &&elem : arr) {
@@ -50,7 +50,7 @@ bool GTrackCoveragePass::initializeGTrackCoveragePass(const char *confFile) {
         }
         if (tbl.at_path("ingore.functions").is_array()) {
             for (auto &&elem : *tbl.at_path("ingore.functions").as_array()) {
-                ingore_functions.push_back(elem.value_or(""));
+                ignore_functions.push_back(elem.value_or(""));
             }
         }
     } catch (const std::exception &e) {
@@ -61,16 +61,16 @@ bool GTrackCoveragePass::initializeGTrackCoveragePass(const char *confFile) {
     return true;
 }
 
-bool isIngore(StringRef filename, StringRef functionName) {
+bool GTrackCoveragePass::isIngore(StringRef filename, StringRef functionName) {
     auto it = std::find_if(
-        ignore_files.begin(), ignore_files.end(),
+        include_files.begin(), include_files.end(),
         [filename](std::string &x) { return filename.endswith(x); });
-    if (it == ignore_funcs.end()) return false;
+    if (it == include_files.end()) return false;
 
     auto it2 = std::find_if(
-        ingore_functions.begin(), ingore_functions.end(),
+        ignore_functions.begin(), ignore_functions.end(),
         [functionName](std::string &x) { return functionName.contains(x); });
-    if (it != ignore_funcs.end()) return false;
+    if (it != ignore_functions.end()) return false;
 
     return true;
 }
