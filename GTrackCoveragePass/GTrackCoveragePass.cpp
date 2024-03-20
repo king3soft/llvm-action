@@ -45,13 +45,13 @@ bool GTrackCoveragePass::initializeGTrackCoveragePass(const char *confFile) {
         if (toml::find(tbl, "include", "files").is_array()) {
             // auto arr = *toml::find(tbl, "include", "files").as_array();
             for (auto &&elem : toml::find(tbl, "include", "files").as_array()) {
-                include_files.push_back(elem.value_or(""));
+                include_files.push_back(elem.as_string().str);
             }
         }
         if (toml::find(tbl, "ignore", "functions").is_array()) {
             // auto arr = *toml::find(tbl, "ignore", "functions").as_array();
             for (auto &&elem : toml::find(tbl, "ignore", "functions").as_array()) {
-                ignore_functions.push_back(elem.value_or(""));
+                ignore_functions.push_back(elem.as_string().str);
             }
         }
     } catch (const std::exception &e) {
