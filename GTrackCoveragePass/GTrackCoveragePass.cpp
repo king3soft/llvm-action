@@ -42,14 +42,15 @@ bool GTrackCoveragePass::initializeGTrackCoveragePass(const char *confFile) {
 
     try {
         auto tbl = toml::parse(confFile);
-        if (tbl.at_path("include.files").is_array()) {
-            auto arr = *tbl.at_path("include.files").as_array();
+        if (toml::find<toml::array>(tbl, "include", "files").is_array()) {
+            auto arr = *toml::find<toml::array>(tbl, "include", "files").as_array();
             for (auto &&elem : arr) {
                 include_files.push_back(elem.value_or(""));
             }
         }
-        if (tbl.at_path("ingore.functions").is_array()) {
-            for (auto &&elem : *tbl.at_path("ingore.functions").as_array()) {
+        if (toml::find<toml::array>(tbl, "ignore", "functions").is_array()) {
+            auto arr = *toml::find<toml::array>(tbl, "ignore", "functions").as_array();
+            for (auto &&elem : arr) {
                 ignore_functions.push_back(elem.value_or(""));
             }
         }
