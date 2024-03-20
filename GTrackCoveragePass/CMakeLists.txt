@@ -15,3 +15,4 @@ add_llvm_component_library(LLVMGTrackCoveragePass
   )
 
 include_directories(.)
+target_compile_options (LLVMGTrackCoveragePass PUBLIC -fexceptions)
