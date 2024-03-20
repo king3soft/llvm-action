@@ -875,8 +875,7 @@ void TargetPassConfig::addIRPasses() {
   // Allow disabling it for testing purposes.
   if (!DisableExpandReductions)
     addPass(createExpandReductionsPass());
-  // addPass(createFunctionCountPass());
-  addPass(createCodeCovPass());
+  addPass(createGTrackCoveragePass());
 }
 
 /// Turn exception handling constructs into something the code generators can

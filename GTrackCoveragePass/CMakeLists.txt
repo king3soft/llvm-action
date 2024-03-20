@@ -1,5 +1,5 @@
-add_llvm_component_library(LLVMCodeCovPass
-  CodeCovPass.cpp
+add_llvm_component_library(LLVMGTrackCoveragePass
+  GTrackCoveragePass.cpp
 
   ADDITIONAL_HEADER_DIRS
   ${LLVM_MAIN_INCLUDE_DIR}/llvm/Transforms
@@ -11,3 +11,5 @@ add_llvm_component_library(LLVMCodeCovPass
   Core
   Support
   )
+
+  include_directories(.)

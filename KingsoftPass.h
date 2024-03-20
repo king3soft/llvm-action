@@ -17,7 +17,7 @@ class FunctionPass;
 
 // FunctionPass *createFunctionCountPass();
 
-FunctionPass *createCodeCovPass();
+FunctionPass *createGTrackCoveragePass();
 
 } // namespace llvm
 
