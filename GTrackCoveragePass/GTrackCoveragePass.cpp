@@ -43,14 +43,14 @@ bool GTrackCoveragePass::initializeGTrackCoveragePass(const char *confFile) {
     try {
         auto tbl = toml::parse(confFile);
         if (toml::find(tbl, "include", "files").is_array()) {
-            auto arr = *toml::find(tbl, "include", "files").as_array();
-            for (auto &&elem : arr) {
+            // auto arr = *toml::find(tbl, "include", "files").as_array();
+            for (auto &&elem : toml::find(tbl, "include", "files").as_array()) {
                 include_files.push_back(elem.value_or(""));
             }
         }
         if (toml::find(tbl, "ignore", "functions").is_array()) {
-            auto arr = *toml::find(tbl, "ignore", "functions").as_array();
-            for (auto &&elem : arr) {
+            // auto arr = *toml::find(tbl, "ignore", "functions").as_array();
+            for (auto &&elem : toml::find(tbl, "ignore", "functions").as_array()) {
                 ignore_functions.push_back(elem.value_or(""));
             }
         }
@@ -71,7 +71,7 @@ bool GTrackCoveragePass::isIngore(StringRef filename, StringRef functionName) {
     auto it2 = std::find_if(
         ignore_functions.begin(), ignore_functions.end(),
         [functionName](std::string &x) { return functionName.contains(x); });
-    if (it != ignore_functions.end()) return false;
+    if (it2 != ignore_functions.end()) return false;
 
     return true;
 }
