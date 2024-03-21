@@ -23,7 +23,7 @@ public:
             errs() << "[GTrackCoveragePass] confFile is not found\n";
             return;
         }
-
+        errs() << "[GTrackCoveragePass] confFile : " << confFile << '\n';
         enable = initializeGTrackCoveragePass(confFile);
     }
 
@@ -45,20 +45,18 @@ bool GTrackCoveragePass::initializeGTrackCoveragePass(const char *confFile) {
     try {
         auto tbl = toml::parse(confFile);
         if (toml::find(tbl, "include", "files").is_array()) {
-            // auto arr = *toml::find(tbl, "include", "files").as_array();
             for (auto &&elem : toml::find(tbl, "include", "files").as_array()) {
                 include_files.push_back(elem.as_string().str);
             }
         }
         if (toml::find(tbl, "ignore", "functions").is_array()) {
-            // auto arr = *toml::find(tbl, "ignore", "functions").as_array();
             for (auto &&elem : toml::find(tbl, "ignore", "functions").as_array()) {
                 ignore_functions.push_back(elem.as_string().str);
             }
         }
 
         std::string outputFile = toml::find<toml::string>(tbl, "output").str;
-        cov_output.open(outputFile, std::ios::out | std::ios::trunc);
+        cov_output.open(outputFile, std::ios::out | std::ios::app);
 
     } catch (const std::exception &e) {
         errs() << "[GTrackCoveragePass] conf parsing failed: " << e.what() << '\n';
@@ -72,14 +70,14 @@ bool GTrackCoveragePass::isIgnore(StringRef filename, StringRef functionName) {
     auto it = std::find_if(
         include_files.begin(), include_files.end(),
         [filename](std::string &x) { return filename.endswith(x); });
-    if (it == include_files.end()) return false;
+    if (it == include_files.end()) return true;    // Ignore
 
     auto it2 = std::find_if(
         ignore_functions.begin(), ignore_functions.end(),
         [functionName](std::string &x) { return functionName.contains(x); });
-    if (it2 != ignore_functions.end()) return false;
+    if (it2 != ignore_functions.end()) return true; // Ignore
 
-    return true;
+    return false; // Include
 }
 
 bool GTrackCoveragePass::runOnFunction(Function &F) {
@@ -107,10 +105,10 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
             Value *funcName = Builder.CreateGlobalStringPtr(functionName);
             Builder.CreateCall(logFunc, {funcName});
 
-            cov_output << "include," << functionName.data() << ',' << filename.data() << '\n' << std::endl;
+            cov_output << "include," << functionName.data() << ',' << filename.data() << std::endl;
             return true;
         }
-        cov_output << "ignore," << functionName.data() << ',' << filename.data() << '\n' << std::endl;
+        cov_output << "ignore," << functionName.data() << ',' << filename.data() << std::endl;
     }
     return false;
 }
