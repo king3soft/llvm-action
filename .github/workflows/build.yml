@@ -77,7 +77,7 @@ jobs:
           ls -al llvm-toolchain
           echo "------------"
           ls -al llvm-toolchain/out
-          tar -zcvf out-install-release.tar.gz ./llvm-toolchain/out
+          tar -zcvf out-install-release.tar.gz ./llvm-toolchain/out/windows-x86-64-install
       - name: Uploading out
         uses: actions/upload-artifact@v2
         with:

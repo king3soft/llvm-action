@@ -28,11 +28,13 @@ public:
     }
 
     bool initializeGTrackCoveragePass(const char *confFile);
-    bool isIngore(StringRef filename, StringRef functionName);
+    bool isIgnore(StringRef filename, StringRef functionName);
     bool runOnFunction(Function &F) override;
 
 private:
     bool enable = false;
+    std::ofstream cov_output;
+
     std::vector<std::string> include_files;
     std::vector<std::string> ignore_functions;
 };
@@ -54,6 +56,10 @@ bool GTrackCoveragePass::initializeGTrackCoveragePass(const char *confFile) {
                 ignore_functions.push_back(elem.as_string().str);
             }
         }
+
+        std::string outputFile = toml::find<toml::string>(tbl, "output").str;
+        cov_output.open(outputFile, std::ios::out | std::ios::trunc);
+
     } catch (const std::exception &e) {
         errs() << "[GTrackCoveragePass] conf parsing failed: " << e.what() << '\n';
         return false;
@@ -62,7 +68,7 @@ bool GTrackCoveragePass::initializeGTrackCoveragePass(const char *confFile) {
     return true;
 }
 
-bool GTrackCoveragePass::isIngore(StringRef filename, StringRef functionName) {
+bool GTrackCoveragePass::isIgnore(StringRef filename, StringRef functionName) {
     auto it = std::find_if(
         include_files.begin(), include_files.end(),
         [filename](std::string &x) { return filename.endswith(x); });
@@ -84,7 +90,7 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
     if (auto *SP = F.getSubprogram()) {
         StringRef filename = SP->getFilename();
         StringRef functionName = F.getName();
-        if (!isIngore(filename, functionName)) {
+        if (!isIgnore(filename, functionName)) {
             LLVMContext &Context = F.getContext();
             Module *M = F.getParent();
 
@@ -101,8 +107,10 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
             Value *funcName = Builder.CreateGlobalStringPtr(functionName);
             Builder.CreateCall(logFunc, {funcName});
 
+            cov_output << "include," << functionName.data() << ',' << filename.data() << '\n' << std::endl
             return true;
         }
+        cov_output << "ignore," << functionName.data() << ',' << filename.data() << '\n' << std::endl
     }
     return false;
 }
