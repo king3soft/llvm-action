@@ -107,10 +107,10 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
             Value *funcName = Builder.CreateGlobalStringPtr(functionName);
             Builder.CreateCall(logFunc, {funcName});
 
-            cov_output << "include," << functionName.data() << ',' << filename.data() << '\n' << std::endl
+            cov_output << "include," << functionName.data() << ',' << filename.data() << '\n' << std::endl;
             return true;
         }
-        cov_output << "ignore," << functionName.data() << ',' << filename.data() << '\n' << std::endl
+        cov_output << "ignore," << functionName.data() << ',' << filename.data() << '\n' << std::endl;
     }
     return false;
 }
