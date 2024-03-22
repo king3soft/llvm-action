@@ -25,6 +25,7 @@ public:
         }
         errs() << "[GTrackCoveragePass] confFile : " << confFile << '\n';
         enable = initializeGTrackCoveragePass(confFile);
+        errs() << "[GTrackCoveragePass] GTrackCoveragePass enable : " << enable << '\n';
     }
 
     bool initializeGTrackCoveragePass(const char *confFile);
@@ -47,16 +48,21 @@ bool GTrackCoveragePass::initializeGTrackCoveragePass(const char *confFile) {
         if (toml::find(tbl, "include", "files").is_array()) {
             for (auto &&elem : toml::find(tbl, "include", "files").as_array()) {
                 include_files.push_back(elem.as_string().str);
+                errs() << "[GTrackCoveragePass] include_files: " << elem.as_string().str << '\n';
             }
         }
         if (toml::find(tbl, "ignore", "functions").is_array()) {
             for (auto &&elem : toml::find(tbl, "ignore", "functions").as_array()) {
                 ignore_functions.push_back(elem.as_string().str);
+                errs() << "[GTrackCoveragePass] ignore_functions: " << elem.as_string().str << '\n';
             }
         }
 
         std::string outputFile = toml::find<toml::string>(tbl, "output").str;
         cov_output.open(outputFile, std::ios::out | std::ios::app);
+        if (cov_output.is_open()) {
+            errs() << "[GTrackCoveragePass] outputFile: " << outputFile << '\n';
+        }
 
     } catch (const std::exception &e) {
         errs() << "[GTrackCoveragePass] conf parsing failed: " << e.what() << '\n';
@@ -84,10 +90,11 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
     if (!enable) {
         return false;
     }
+    StringRef filename = SP->getFilename();
+    StringRef functionName = F.getName();
+    errs() << "[GTrackCoveragePass] runOnFunction: " << functionName << " in " << filename << '\n';
 
     if (auto *SP = F.getSubprogram()) {
-        StringRef filename = SP->getFilename();
-        StringRef functionName = F.getName();
         if (!isIgnore(filename, functionName)) {
             LLVMContext &Context = F.getContext();
             Module *M = F.getParent();
@@ -106,9 +113,11 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
             Builder.CreateCall(logFunc, {funcName});
 
             cov_output << "include," << functionName.data() << ',' << filename.data() << std::endl;
+            errs() << "include," << functionName.data() << ',' << filename.data() << '\n';
             return true;
         }
         cov_output << "ignore," << functionName.data() << ',' << filename.data() << std::endl;
+        errs() << "ignore," << functionName.data() << ',' << filename.data() << '\n';
     }
     return false;
 }
