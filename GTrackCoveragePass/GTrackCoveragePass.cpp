@@ -90,11 +90,13 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
     if (!enable) {
         return false;
     }
-    StringRef filename = SP->getFilename();
-    StringRef functionName = F.getName();
-    errs() << "[GTrackCoveragePass] runOnFunction: " << functionName << " in " << filename << '\n';
+
 
     if (auto *SP = F.getSubprogram()) {
+        StringRef filename = SP->getFilename();
+        StringRef functionName = F.getName();
+        errs() << "[GTrackCoveragePass] runOnFunction: " << functionName << " in " << filename << '\n';
+        
         if (!isIgnore(filename, functionName)) {
             LLVMContext &Context = F.getContext();
             Module *M = F.getParent();
