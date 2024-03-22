@@ -3,9 +3,10 @@
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/DebugInfoMetadata.h"
-
+#include "llvm/Support/FileSystem.h"
 #include "toml.hpp"
 #include <fstream>
+#include <mutex>
 
 using namespace llvm;
 
@@ -34,7 +35,8 @@ public:
 
 private:
     bool enable = false;
-    std::ofstream cov_output;
+    static std::ofstream cov_output;
+    static std::mutex cov_output_mutex;
 
     std::vector<std::string> include_files;
     std::vector<std::string> ignore_functions;
@@ -58,9 +60,9 @@ bool GTrackCoveragePass::initializeGTrackCoveragePass(const char *confFile) {
             }
         }
 
-        std::string outputFile = toml::find<toml::string>(tbl, "output").str;
-        cov_output.open(outputFile, std::ios::out | std::ios::app);
-        if (cov_output.is_open()) {
+        if (!cov_output.is_open()) {
+            std::string outputFile = toml::find<toml::string>(tbl, "output").str;
+            cov_output.open(outputFile, std::ios::out | std::ios::app);
             errs() << "[GTrackCoveragePass] outputFile: " << outputFile << '\n';
         }
 
@@ -114,11 +116,13 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
             Value *funcName = Builder.CreateGlobalStringPtr(functionName);
             Builder.CreateCall(logFunc, {funcName});
 
+            std::lock_guard<std::mutex> lock(cov_output_mutex);
             cov_output << "include," << functionName.data() << ',' << filename.data() << std::endl;
+            lock.unlock();
             errs() << "include," << functionName.data() << ',' << filename.data() << '\n';
             return true;
         }
-        cov_output << "ignore," << functionName.data() << ',' << filename.data() << std::endl;
+        //cov_output << "ignore," << functionName.data() << ',' << filename.data() << std::endl;
         errs() << "ignore," << functionName.data() << ',' << filename.data() << '\n';
     }
     return false;
