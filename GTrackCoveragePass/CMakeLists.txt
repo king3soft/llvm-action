@@ -2,6 +2,7 @@ set(PICO_CXX_ENABLE_EXCEPTIONS 1)
 
 add_llvm_component_library(LLVMGTrackCoveragePass
   GTrackCoveragePass.cpp
+  Logger.cpp
 
   ADDITIONAL_HEADER_DIRS
   ${LLVM_MAIN_INCLUDE_DIR}/llvm/Transforms
