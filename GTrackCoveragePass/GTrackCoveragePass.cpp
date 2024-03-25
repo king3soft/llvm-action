@@ -3,10 +3,10 @@
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/DebugInfoMetadata.h"
-#include "llvm/Support/FileSystem.h"
+
 #include "toml.hpp"
+#include "Logger.h"
 #include <fstream>
-#include <mutex>
 
 using namespace llvm;
 
@@ -32,11 +32,10 @@ public:
     bool initializeGTrackCoveragePass(const char *confFile);
     bool isIgnore(StringRef filename, StringRef functionName);
     bool runOnFunction(Function &F) override;
+    // bool doFinalization(Module &M) override;
 
 private:
     bool enable = false;
-    static std::ofstream cov_output;
-    static std::mutex cov_output_mutex;
 
     std::vector<std::string> include_files;
     std::vector<std::string> ignore_functions;
@@ -60,11 +59,8 @@ bool GTrackCoveragePass::initializeGTrackCoveragePass(const char *confFile) {
             }
         }
 
-        if (!cov_output.is_open()) {
-            std::string outputFile = toml::find<toml::string>(tbl, "output").str;
-            cov_output.open(outputFile, std::ios::out | std::ios::app);
-            errs() << "[GTrackCoveragePass] outputFile: " << outputFile << '\n';
-        }
+        std::string output_file = toml::find<toml::string>(tbl, "output").str;
+        Logger::open(output_file);
 
     } catch (const std::exception &e) {
         errs() << "[GTrackCoveragePass] conf parsing failed: " << e.what() << '\n';
@@ -116,17 +112,16 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
             Value *funcName = Builder.CreateGlobalStringPtr(functionName);
             Builder.CreateCall(logFunc, {funcName});
 
-            std::lock_guard<std::mutex> lock(cov_output_mutex);
-            cov_output << "include," << functionName.data() << ',' << filename.data() << std::endl;
-            lock.unlock();
+            Logger::write(std::string(filename) + "," + std::string(functionName));
             errs() << "include," << functionName.data() << ',' << filename.data() << '\n';
             return true;
         }
-        //cov_output << "ignore," << functionName.data() << ',' << filename.data() << std::endl;
         errs() << "ignore," << functionName.data() << ',' << filename.data() << '\n';
     }
     return false;
 }
+
+// bool GTrackCoveragePass::doFinalization(Module &M) {}
 
 char GTrackCoveragePass::ID = 0;
 
