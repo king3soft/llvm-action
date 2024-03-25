@@ -123,6 +123,7 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
 
 bool GTrackCoveragePass::doFinalization(Module &M) {
     Logger::flush();
+    return true;
 }
 
 char GTrackCoveragePass::ID = 0;
