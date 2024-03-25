@@ -36,7 +36,6 @@ public:
 private:
     bool enable = false;
     static std::ofstream cov_output;
-    static std::mutex cov_output_mutex;
 
     std::vector<std::string> include_files;
     std::vector<std::string> ignore_functions;
@@ -116,9 +115,7 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
             Value *funcName = Builder.CreateGlobalStringPtr(functionName);
             Builder.CreateCall(logFunc, {funcName});
 
-            std::lock_guard<std::mutex> lock(cov_output_mutex);
             cov_output << "include," << functionName.data() << ',' << filename.data() << std::endl;
-            lock.unlock();
             errs() << "include," << functionName.data() << ',' << filename.data() << '\n';
             return true;
         }
