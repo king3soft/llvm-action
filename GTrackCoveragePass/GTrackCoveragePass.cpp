@@ -32,7 +32,7 @@ public:
     bool initializeGTrackCoveragePass(const char *confFile);
     bool isIgnore(StringRef filename, StringRef functionName);
     bool runOnFunction(Function &F) override;
-    // bool doFinalization(Module &M) override;
+    bool doFinalization(Module &M) override;
 
 private:
     bool enable = false;
@@ -121,7 +121,9 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
     return false;
 }
 
-// bool GTrackCoveragePass::doFinalization(Module &M) {}
+bool GTrackCoveragePass::doFinalization(Module &M) {
+    Logger::flush();
+}
 
 char GTrackCoveragePass::ID = 0;
 

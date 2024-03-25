@@ -16,3 +16,7 @@ void Logger::write(const string& message){
     ostream& stream =  instance.fileStream ;
     stream << message<< endl;
 }
+
+void Logger::flush() {
+    instance.fileStream.flush();
+}

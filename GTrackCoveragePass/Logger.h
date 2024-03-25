@@ -11,6 +11,7 @@ class Logger{
             static void close();
             // write message
             static void write( const string & message);
+            static void flush();
 
     private:
           Logger();
