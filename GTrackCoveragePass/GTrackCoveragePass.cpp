@@ -3,6 +3,7 @@
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/DebugInfoMetadata.h"
+#include "llvm/Support/FileSystem.h"
 
 #include "toml.hpp"
 #include "Logger.h"
@@ -32,10 +33,19 @@ public:
     bool initializeGTrackCoveragePass(const char *confFile);
     bool isIgnore(StringRef filename, StringRef functionName);
     bool runOnFunction(Function &F) override;
-    bool doFinalization(Module &M) override;
+    // bool doFinalization(Module &M) override;
+
+    raw_fd_ostream &covouts() {
+        std::error_code EC;
+        errs() << output_file << '\n';
+        static raw_fd_ostream S(output_file, EC, sys::fs::F_Text);
+        assert(!EC);
+        return S;
+    }
 
 private:
     bool enable = false;
+    std::string output_file;
 
     std::vector<std::string> include_files;
     std::vector<std::string> ignore_functions;
@@ -59,8 +69,10 @@ bool GTrackCoveragePass::initializeGTrackCoveragePass(const char *confFile) {
             }
         }
 
-        std::string output_file = toml::find<toml::string>(tbl, "output").str;
-        Logger::open(output_file);
+        output_file = toml::find<toml::string>(tbl, "output").str;
+        // output = StringRef(output_file);
+        errs() << "[GTrackCoveragePass] output: " << output_file << '\n';
+        // Logger::open(output_file);
 
     } catch (const std::exception &e) {
         errs() << "[GTrackCoveragePass] conf parsing failed: " << e.what() << '\n';
@@ -112,7 +124,8 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
             Value *funcName = Builder.CreateGlobalStringPtr(functionName);
             Builder.CreateCall(logFunc, {funcName});
 
-            Logger::write(std::string(filename) + "," + std::string(functionName));
+            // Logger::write(std::string(filename) + "," + std::string(functionName));
+            covouts() << std::string(filename) << ',' << std::string(functionName) << '\n';
             errs() << "include," << functionName.data() << ',' << filename.data() << '\n';
             return true;
         }
@@ -121,10 +134,7 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
     return false;
 }
 
-bool GTrackCoveragePass::doFinalization(Module &M) {
-    Logger::flush();
-    return true;
-}
+// bool GTrackCoveragePass::doFinalization(Module &M) {}
 
 char GTrackCoveragePass::ID = 0;
 
