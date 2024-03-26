@@ -113,7 +113,7 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
 
             // void GTrack_Coverage(const char *)
             FunctionCallee logFunc = M->getOrInsertFunction("GTrack_Coverage",
-                FunctionType::get(Type::getVoidTy(Context), {Type::getInt8PtrTy(Context)}, false));
+                FunctionType::get(Type::getVoidTy(Context), {Type::getInt8PtrTy(Context), Type::getInt8PtrTy(Context)}, false));
 
             IRBuilder<> Builder(&*F.getEntryBlock().getFirstInsertionPt());
             
@@ -121,8 +121,9 @@ bool GTrackCoveragePass::runOnFunction(Function &F) {
             auto *DILoc = DILocation::get(Context, SP->getLine(), 0, SP);
             Builder.SetCurrentDebugLocation(DILoc); 
 
-            Value *funcName = Builder.CreateGlobalStringPtr(functionName);
-            Builder.CreateCall(logFunc, {funcName});
+            Value *fileNameString = Builder.CreateGlobalStringPtr(filename);
+            Value *funcNameString = Builder.CreateGlobalStringPtr(functionName);
+            Builder.CreateCall(logFunc, {fileNameString, funcNameString});
 
             // Logger::write(std::string(filename) + "," + std::string(functionName));
             covouts() << std::string(filename) << ',' << std::string(functionName) << '\n';
